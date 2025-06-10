@@ -1,65 +1,60 @@
-# learn-file-storage-s3-typescript-starter (Tubely)
+# Tubely - TypeScript File Server
 
-This repo contains the starter code for the Tubely application - the #1 tool for engagement bait - for the "Learn File Servers and CDNs with S3 and CloudFront" [course](https://www.boot.dev/courses/learn-file-servers-s3-cloudfront-typescript) on [boot.dev](https://www.boot.dev)
+An educational project for learning large file storage and management in web applications. This project demonstrates how to handle video files, thumbnails, and other large assets using TypeScript and modern file storage techniques.
 
-## Quickstart
+## About
 
-*This is to be used as a *reference\* in case you need it, you should follow the instructions in the course rather than trying to do everything here.
+Tubely is a file management application that helps users manage their video assets. It allows you to upload, store, serve, and add metadata to video files while also managing thumbnails and other video metadata. This project teaches the fundamentals of handling large files in web applications, from local filesystem storage to cloud-based solutions.
 
-## 1. Install dependencies
+## Technologies
 
-- [Typescript](https://www.typescriptlang.org/)
-- [Bun](https://bun.sh/)
-- [FFMPEG](https://ffmpeg.org/download.html) - both `ffmpeg` and `ffprobe` are required to be in your `PATH`.
+- **TypeScript** - Type-safe JavaScript for better development experience
+- **Bun** - Fast JavaScript runtime and package manager
+- **SQLite** - Lightweight database for metadata storage
+- **FFMPEG** - Video processing and thumbnail generation
 
-```bash
-# linux
-sudo apt update
-sudo apt install ffmpeg
+## Getting Started
 
-# mac
-brew update
-brew install ffmpeg
-```
-
-- [SQLite 3](https://www.sqlite.org/download.html) only required for you to manually inspect the database.
+### 1. Install Dependencies
 
 ```bash
-# linux
-sudo apt update
-sudo apt install sqlite3
-
-# mac
-brew update
-brew install sqlite3
+bun install
 ```
 
-- [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+### 2. Environment Setup
 
-## 2. Download sample images and videos
-
-```bash
-./samplesdownload.sh
-# samples/ dir will be created
-# with sample images and videos
-```
-
-## 3. Configure environment variables
-
-Copy the `.env.example` file to `.env` and fill in the values.
+Copy the environment example file:
 
 ```bash
 cp .env.example .env
 ```
 
-You'll need to update values in the `.env` file to match your configuration, but _you won't need to do anything here until the course tells you to_.
-
-## 3. Run the server
+### 3. Run the Application
 
 ```bash
 bun run src/index.ts
 ```
 
-- You should see a new database file `tubely.db` created in the root directory.
-- You should see a new `assets` directory created in the root directory, this is where the images will be stored.
-- You should see a link in your console to open the local web page.
+The server will start and display a URL in the console. Open this URL in your browser to access the Tubely application.
+
+## What You'll Learn
+
+- Understanding the difference between "large" files and small structured data
+- Local filesystem management for file storage
+- Video streaming and performance optimization
+- File upload and processing workflows
+- Metadata management for media files
+- Thumbnail generation and serving
+
+## Database
+
+The application automatically generates a SQLite database called `tubely.db` in the root directory when you first run the server. This database stores all structured data including user accounts, video metadata, and other application data.
+
+## Project Structure
+
+- `src/` - Main application source code
+- `src/api/` - API endpoints for file operations
+- `src/db/` - Database models and operations
+- `src/app/` - Frontend application files
+- `assets/` - Local file storage directory (created on first run)
+- `tubely.db` - SQLite database file (created on first run)
