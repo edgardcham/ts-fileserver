@@ -47,6 +47,16 @@ export async function handlerUploadThumbnail(cfg: ApiConfig, req: BunRequest) {
   console.log("uploading thumbnail for video", videoId, "by user", userID);
 
   const formData = await req.formData();
+
+  const contentType = req.headers.get("Content-Type");
+  if (!contentType) {
+    throw new BadRequestError("Invalid content type");
+  }
+
+  if (contentType !== "image/jpeg" && contentType !== "image/png") {
+    throw new BadRequestError("Invalid content type");
+  }
+
   const file = formData.get("thumbnail");
   if (!(file instanceof File)) {
     throw new BadRequestError("Invalid thumbnail file");
