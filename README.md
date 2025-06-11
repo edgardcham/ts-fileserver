@@ -50,6 +50,21 @@ The server will start and display a URL in the console. Open this URL in your br
 
 The application automatically generates a SQLite database called `tubely.db` in the root directory when you first run the server. This database stores all structured data including user accounts, video metadata, and other application data.
 
+## Caching
+
+The application uses HTTP caching headers to control how browsers cache static assets like thumbnails and videos. The `noCacheMiddleware` sets the following header on all assets served from the `/assets` directory:
+
+- `Cache-Control: no-store` - Tells the browser not to cache the resource at all. The browser must fetch the resource from the server every time.
+
+### Common Cache-Control Values
+
+- **`no-store`**: Don't cache this resource at all. Always fetch fresh from the server.
+- **`no-cache`**: Cache the resource, but always revalidate with the server before using it. Despite the name, it does allow caching!
+- **`max-age=3600`**: Cache this resource for 1 hour (3600 seconds) without checking the server.
+- **`stale-while-revalidate`**: Serve stale content immediately while fetching a fresh copy in the background.
+
+For dynamic content like user-uploaded thumbnails that may change frequently, `no-store` ensures users always see the latest version immediately after uploading.
+
 ## Project Structure
 
 - `src/` - Main application source code

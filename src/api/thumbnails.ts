@@ -5,11 +5,7 @@ import type { ApiConfig } from "../config";
 import type { BunRequest } from "bun";
 import { BadRequestError, NotFoundError, UserForbiddenError } from "./errors";
 import path from "path";
-
-type Thumbnail = {
-  data: ArrayBuffer;
-  mediaType: string;
-};
+import crypto from "crypto";
 
 // export async function handlerGetThumbnail(cfg: ApiConfig, req: BunRequest) {
 //   const { videoId } = req.params as { videoId?: string };
@@ -48,21 +44,19 @@ export async function handlerUploadThumbnail(cfg: ApiConfig, req: BunRequest) {
 
   const formData = await req.formData();
 
-  const contentType = req.headers.get("Content-Type");
-  if (!contentType) {
-    throw new BadRequestError("Invalid content type");
-  }
-
-  if (contentType !== "image/jpeg" && contentType !== "image/png") {
-    throw new BadRequestError("Invalid content type");
-  }
-
   const file = formData.get("thumbnail");
   if (!(file instanceof File)) {
     throw new BadRequestError("Invalid thumbnail file");
   }
+
+  const fileType = file.type;
+  console.log("fileType", fileType);
+  if (fileType !== "image/jpeg" && fileType !== "image/png") {
+    throw new BadRequestError(
+      "Invalid file type - only JPEG and PNG are allowed"
+    );
+  }
   const MAX_UPLOAD_SIZE = 1024 * 1024 * 10; // 10MB
-  const fileType = file.type; // get type
   const fileBuffer = await file.arrayBuffer();
 
   let video = getVideo(cfg.db, videoId);
@@ -76,14 +70,12 @@ export async function handlerUploadThumbnail(cfg: ApiConfig, req: BunRequest) {
     );
   }
 
-  const thumbnail: Thumbnail = {
-    data: fileBuffer,
-    mediaType: fileType,
-  };
+  const randomBytes = crypto.randomBytes(32).toString("base64url");
+
   const fileExtension = fileType.split("/")[1];
-  const filePath = path.join(cfg.assetsRoot, `${videoId}.${fileExtension}`);
+  const filePath = path.join(cfg.assetsRoot, `${randomBytes}.${fileExtension}`);
   await Bun.write(filePath, fileBuffer);
-  const thumbnailURL = `http://localhost:${cfg.port}/assets/${videoId}.${fileExtension}`;
+  const thumbnailURL = `http://localhost:${cfg.port}/assets/${randomBytes}.${fileExtension}`;
   video.thumbnailURL = thumbnailURL;
   updateVideo(cfg.db, video);
   return respondWithJSON(200, video);
